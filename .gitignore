@@ -1,0 +1,26 @@
+# Python
+backend/venv/
+backend/__pycache__/
+backend/models/__pycache__/
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ignore any top-level or nested __pycache__ (models/ etc.) and compiled files
+**/__pycache__/
+
+backend/*.pyc
+backend/.env
+
+# Node
+frontend/node_modules/
+frontend/dist/
+
+# Outputs
+backend/output/
+*.pdf
+*.log
+*.aux
+
+.env
