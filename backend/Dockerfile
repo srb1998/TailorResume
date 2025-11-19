@@ -1,22 +1,27 @@
 FROM python:3.10-slim
 
-# Set the working directory inside the container
 WORKDIR /app
 
-# Install the system dependencies required by WeasyPrint on Linux
-# This is the equivalent of what you did on Windows with MSYS2
+# Install system dependencies for WeasyPrint (PDF generation)
 RUN apt-get update && apt-get install -y \
-    libgtk-3-0 \
+    build-essential \
+    python3-dev \
+    python3-pip \
+    python3-setuptools \
+    python3-wheel \
+    python3-cffi \
+    libcairo2 \
     libpango-1.0-0 \
+    libpangocairo-1.0-0 \
     libgdk-pixbuf2.0-0 \
+    libffi-dev \
+    shared-mime-info \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy your Python requirements file and install them
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of your backend code into the container
 COPY . .
 
-# Command to run your FastAPI application
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Use the PORT environment variable provided by Railway
+CMD sh -c "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}"
