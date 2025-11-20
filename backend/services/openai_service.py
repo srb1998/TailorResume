@@ -1,13 +1,16 @@
-# openai_service.py
-import openai
+# backend/services/openai_service.py
+
+from openai import OpenAI 
 import os
 import json
 from dotenv import load_dotenv
 from typing import List, Dict
 
 load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
 
+# Initialize the client explicitly. 
+
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def extract_keywords(job_description: str) -> List[str]:
     """
@@ -15,27 +18,28 @@ def extract_keywords(job_description: str) -> List[str]:
     """
     prompt = f"""You are an ATS keyword extraction expert.
 
-Job Description:
-{job_description}
+    Job Description:
+    {job_description}
 
-Extract the 15-20 most important keywords that should be highlighted in a resume.
-Focus on:
-1. Technical skills (Python, React, AWS, etc.)
-2. Tools and frameworks (Docker, Kubernetes, FastAPI, etc.)
-3. Key qualifications (Machine Learning, Gen AI, Data Science, etc.)
-4. Important certifications or requirements
+    Extract the 15-20 most important keywords that should be highlighted in a resume.
+    Focus on:
+    1. Technical skills (Python, React, AWS, etc.)
+    2. Tools and frameworks (Docker, Kubernetes, FastAPI, etc.)
+    3. Key qualifications (Machine Learning, Gen AI, Data Science, etc.)
+    4. Important certifications or requirements
 
-Return ONLY a JSON array of keywords (no explanations):
-["keyword1", "keyword2", "keyword3", ...]
+    Return ONLY a JSON array of keywords (no explanations):
+    ["keyword1", "keyword2", "keyword3", ...]
 
-Rules:
-- Each keyword should be 1-3 words max
-- Use proper capitalization (e.g., "Python" not "python")
-- Include variations if important (e.g., "AI", "Artificial Intelligence")
-"""
+    Rules:
+    - Each keyword should be 1-3 words max
+    - Use proper capitalization (e.g., "Python" not "python")
+    - Include variations if important (e.g., "AI", "Artificial Intelligence")
+    """
 
     try:
-        response = openai.chat.completions.create(
+        # Use client.chat.completions.create instead of openai.chat.completions.create
+        response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[{"role": "user", "content": prompt}],
             temperature=0.3
@@ -123,7 +127,7 @@ email@example.com | (123) 456-7890 | linkedin.com/in/johndoe
 """
 
     try:
-        response = openai.chat.completions.create(
+        response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[{"role": "user", "content": prompt}],
             temperature=0.7
@@ -164,7 +168,7 @@ Return ONLY a JSON object:
 """
 
     try:
-        response = openai.chat.completions.create(
+        response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[{"role": "user", "content": prompt}],
             temperature=0.8
